@@ -12,6 +12,7 @@ import time
 import winsound # for beep sound
 import os
 import requests
+from dotenv import load_dotenv
 
 # Speak Function
 def speak(text):
@@ -29,16 +30,17 @@ def notify(heading,sms,timeup):
     notifications.notify(title = heading, message = sms, timeout = timeup)
 
 # Telegram Bot Alert Reminder
+load_dotenv()
+
 def send_alert(Alert_Message):
-    token = "9107755507:AAHrJOMS0Okd0tQPP6oTjMMtPGfXAamiB0c"
-    chat_id = "8947111594"
+    token = os.getenv("Telegram_Bot_Token")
+    chat_id = os.getenv("Telegram_Bot_Chat_ID")
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     
     payload = {
         "chat_id": chat_id,
         "text": Alert_Message
     }
-    print("Sent!")
     try:
         requests.post(url, json=payload)
     except Exception as e:
@@ -51,7 +53,7 @@ speak(f"Hey! I am 'Cell Aegis' The Ultimate Version!\nI'll notify you Whenever y
 while True:
     battery = psutil.sensors_battery()
     plugged = battery.power_plugged
-    percentage = battery.percent
+    percentage = 18#battery.percent
 
     if not plugged and percentage <=16:
         send_alert("Hurry up! You only have 30 seconds to Plugin Your PC's Charger. It's Going to Shutdown")
